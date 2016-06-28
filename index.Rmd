@@ -1,0 +1,85 @@
+---
+title       : How's your SaaS business doing?
+subtitle    : Revenue Retention Curves
+author      : John Chung
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Must have KPIs
+
+Here are the KPIs (Key Performance Indicators) that every SaaS company must have. 
+
+1. Recurring Revenue
+2. Cost to Acquire the Customer (CAC)
+3. Retention Rate
+
+---
+
+## Recurring Revenue & CAC
+
+SaaS is a subscription business, so customers pay every month or every year. To make a profit, there needs to be steay cash flow for a minimum period to cover the cost of acquiring the customer.
+
+Therefore, it is important that we not only acquire customers, but that they retain with us. 
+
+![](SaaS image.png)
+
+_Source:_ [link](http://www.forentrepreneurs.com/saas-metrics-2/)
+
+---
+
+## Retention Rate
+
+Retention Rate is that which is used to measure how well our customers are retaining and monitoring this will help assess how well my business is doing. 
+
+Below is a heat map. 
+
+```{r echo=FALSE, fig.height=5, fig.width=10}
+library(ggplot2)
+library(scales)
+
+# all.rr.final is the df that has the retention data
+all.rr.final %>% 
+  filter(PRODUCT=='GTM' & CHANNEL=='ONLINE') %>%
+  mutate(START_MONTH=as.factor(START_MONTH)) %>%
+  ggplot(aes(x=AGE, 
+             y=factor(START_MONTH,levels=levels(START_MONTH)[length(unique(START_MONTH)):1]),              fill=REN.RATE)) + 
+    geom_tile(color = "white", size=0.1) + 
+    ylab("STARTING MONTH") +
+    xlab("# of months since Starting Month") +
+    scale_fill_gradient2(low = "white", high = "darkgreen", 
+                         limit=c(0,1.1), midpoint=0.3, label=percent)
+```  
+
+---
+
+## Revenue Retention Curves
+
+The application will help monitor the health of my business. Below is a graph of the retention curves for only one of the products. 
+
+```{r echo=FALSE, fig.height=5, fig.width=12}
+all.rr.final %>% 
+  filter(PRODUCT=='GTM' & 
+           CHANNEL=='ONLINE' &
+           AGE %in% 0:24) %>%
+  ggplot(aes(x=AGE, y=REN.RATE, group=START_MONTH, color=as.factor(START_MONTH))) + 
+  geom_line() + 
+  ylab("Revenue Retention (%)") +
+  xlab("# of months since Starting Month") +
+  theme(text=element_text(size=15))+
+  scale_y_continuous(labels=percent)+
+  scale_color_discrete(name="Starting Month")
+```
+
+Just based on this one view, it looks like customers are retaining better for this product.=)
+
+
+
+
+
+
